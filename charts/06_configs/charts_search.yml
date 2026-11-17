@@ -1,0 +1,19 @@
+# CHARTS offline search config for 03_offline_search/pirate_fil_search.py.
+# Band, channels and tsamp are overwritten with the .fil header.
+# Rank 16 => tree 0: DM 0-~2200 (boxcar <= 32 samples); tree 1 (x2 in time): DM ~2200-~4400 (boxcar <= 16x2 = 32 ms).
+# No subbands: uses the already compiled "production" kernels.
+zone_freq_edges: [300, 501.6]
+zone_nfreq: [672]
+time_sample_ms: 1.0
+beams_per_gpu: 1
+dtype: float16
+time_samples_per_chunk: 2048
+frequency_subband_counts: [0,0,0,0,1]
+max_gpu_clag: 5
+beams_per_batch: 1
+num_active_batches: 1
+toplevel_tree_rank: 16
+primary_trees:
+  - {num_early_triggers: 0, max_width: 32, wt_dm_downsampling: 64, wt_time_downsampling: 64}
+  - {num_early_triggers: 0, max_width: 16, wt_dm_downsampling: 64, wt_time_downsampling: 64}
+future_write_max_samples: 5000

@@ -2,6 +2,10 @@
 
 An experimental GPU-based fast transient search, intended for use in CHORD.
 
+> **CHARTS fork:** the [`charts/`](charts/) folder holds the CHARTS real-time FRB search built on pirate
+> (64 beams × 21 504 channels: data emitter, grouper, FRB alerts, evaluation). Start at [`charts/README.md`](charts/README.md).
+> Everything outside `charts/` is upstream pirate ([kmsmith137/pirate](https://github.com/kmsmith137/pirate)) unchanged.
+
 Some notes/caveats:
 
   - This repo contains real-time server code (network receive, ring buffering,

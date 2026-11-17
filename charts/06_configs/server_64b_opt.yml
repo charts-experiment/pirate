@@ -1,0 +1,21 @@
+# pirate server optimized in memory for 64 beams (2026-10-21): RAM pool adjusted to what is used (previously 150 GiB).
+# The RAM left over from host_memory_per_server (after dedispersion) is used as the frame ring buffer.
+num_servers: 1
+server_cpus: [ 0 ]
+host_memory_per_server: '64 GiB'   # 20 GiB tree history + ~44 GiB ring buffer (32 chunks x 64 beams x 22.7 MB)
+gpu_memory_per_server: '15 GiB'   # dedispersion uses 14.4 GiB (gmem 15.5 GB)
+use_hugepages: false
+ringbuf_nchunks: 32   # 65.5 s: covers the DM 1000 latency (~33 s) with margin
+data_ip_addrs:
+  - '127.0.0.1:5000'
+rpc_ip_addrs:
+  - '127.0.0.1:6000'
+grouper_ip_addrs:
+  - '127.0.0.1:7000'
+min_data_mtu: 1500
+min_rpc_mtu: 1500
+ssd_dirs: [ '/dev/shm/pirate_ssd' ]
+ssd_threads_per_server: 1
+nfs_dir: 'dumps'   # relative to where pirate is launched (08_server/launcher.py sets it to <run>/dumps)
+nfs_threads_per_server: 1
+check_mountpoints: [ ]

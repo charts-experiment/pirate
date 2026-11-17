@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+# data and outputs: not in git
+*.fil
+*.npz
+*.h5
+*.hdf5
+*.asdf
+*.npy
+!05_site_rfi/frequencies_mhz.npy
+!05_site_rfi/mask_m1.npy
+!05_site_rfi/mask_m2.npy
+05_site_rfi/dynamic_spectrum.npy
+05_site_rfi/site_rfi_model.npz
+05_site_rfi/fil/
+results/
+results_*/
+resultados/
+logs/
+windows/
+ventanas/
+dumps/
+*.log
+tiempo_real/
+outputs*/
+_hechos.jsonl
+_done.jsonl
+02_quantization/plots_21504/
+05_site_rfi/figures_upchannelization/
+05_site_rfi/input_diagnostics.npz

@@ -1,0 +1,65 @@
+# 64-beam test: ONE file for the emitter, the server and the launcher.
+# The values are those of the runs reported in docs/RESULTS_64beams.md.
+# Paths accept environment variables ($VAR).
+
+test:
+  beams: 64
+  channels: 21504                    # 672 coarse channels × 32
+  band_mhz: [299.8497764530551, 501.7502235469449]
+  sample_ms: 1.0
+  block_samples: 2048                # one block (chunk) = 2.048 s
+
+network:
+  # pirate server receivers: the emitter connects here. For an emitter on another machine, use the IP of the
+  # search machine (not 127.0.0.1). More beams need more receivers (~11 Gbit/s per receiver).
+  receivers: ["127.0.0.1:5000"]
+  connections_per_receiver: 4        # each connection mimics an X-engine node with a channel range
+  rpc: "127.0.0.1:6000"
+  grouper: "127.0.0.1:7000"
+  sifter: "127.0.0.1:7500"
+
+server:                              # search machine
+  ram_gib: 150                       # pirate memory pool: tree state (~20 GiB) + input ring buffer
+  gpu_gib: 17
+  ring_blocks: 64                    # 131 s of raw data in RAM
+  cpus: [0]
+  dedispersion:
+    rank: 15                         # DM ≤ 1105
+    max_gpu_clag: 5                  # blocks of tree state kept on the GPU; the rest in RAM
+    trees:
+      - {num_early_triggers: 0, max_width: 32, wt_dm_downsampling: 64, wt_time_downsampling: 64}
+  grouper:
+    threshold: 6                     # minimum S/N of the events sent to the sifter
+    full_log: true                   # all_events.log without the cap of 4 events per beam
+    profile: false                   # per-stage timings in grouper_timings.csv
+    extra: []                        # additional options for grouper_v1.py
+  alerts:                            # sifter: which event is an FRB alert (08_server/sifter/alert_sifter.py)
+    threshold: 7.6                   # S/N; ~10 false alarms/h for the 64-beam system with site RFI + mask m1
+    dm_min: 20                       # terrestrial RFI has DM ~ 0
+    dm_max: null
+    max_beams: 8                     # more beams than this with the same arrival = RFI (veto)
+    window_s: 0.5                    # arrival tolerance for grouping and veto
+    action: null                     # command run per alert, with the JSON on standard input (e.g. "cat >> /tmp/a.json")
+
+emitter:                             # can run on another machine
+  set_dir: null      # null = $CHARTS_SET_DIR. Group 3: A_snr_fijo, B_amplitud_fija, negativos, parcial (manifest.csv + .fil)
+  sets: [A, B, NEG, P]
+  limit: null                        # first N files of each set (null = all)
+  prepad_s: 10
+  tail_s: 60
+  beams_with_data: null              # null = all; N = only the first N beams read .fil files, the rest get fill
+  fill: noise                        # noise | zeros
+  quantization: fixed                # fixed | per_channel (per_channel is used with RFI)
+  mask: null                         # e.g. 05_site_rfi/mask_m1.npy
+  rfi:
+    enabled: false                   # site RFI (requires 05_site_rfi/site_rfi_model.npz)
+    line_threshold_db: 10
+    attenuation_db: 0
+  pacing: real-time                  # real-time | ack | free
+  speed: 1.0
+  processes: 8                       # processes that prepare the blocks
+  gpu: false                         # quantize/inject with cupy
+  seed: 1
+
+environments:
+  pirate: null      # null = autodetect: $CHARTS_PIRATE_ENV, the active environment or pirate_frb in the PATH. Or a fixed path

@@ -1,0 +1,17 @@
+# Group-3 64-beam test (21 504 channels, 1 ms), search up to DM ~1107.
+# Band edges = edges of the fine grid (672 channels x 32): 299.84978 - 501.75022 MHz.
+# Rank 15, one tree, maximum boxcar 32 ms, no subbands (existing production kernels).
+zone_freq_edges: [299.8497764530551, 501.7502235469449]
+zone_nfreq: [21504]
+time_sample_ms: 1.0
+beams_per_gpu: 64
+dtype: float16
+time_samples_per_chunk: 2048
+frequency_subband_counts: [0,0,0,0,1]
+max_gpu_clag: 5
+beams_per_batch: 2
+num_active_batches: 2
+toplevel_tree_rank: 15
+primary_trees:
+  - {num_early_triggers: 0, max_width: 32, wt_dm_downsampling: 64, wt_time_downsampling: 64}
+future_write_max_samples: 5000

@@ -1,0 +1,21 @@
+# pirate server on this machine (1 CPU, 1 RTX 4090, loopback).
+# The RAM left over from host_memory_per_server (after dedispersion) is used as the frame ring buffer.
+num_servers: 1
+server_cpus: [ 0 ]
+host_memory_per_server: '150 GiB'
+gpu_memory_per_server: '17 GiB'
+use_hugepages: false
+ringbuf_nchunks: 64
+data_ip_addrs:
+  - '127.0.0.1:5000'
+rpc_ip_addrs:
+  - '127.0.0.1:6000'
+grouper_ip_addrs:
+  - '127.0.0.1:7000'
+min_data_mtu: 1500
+min_rpc_mtu: 1500
+ssd_dirs: [ '/dev/shm/pirate_ssd' ]
+ssd_threads_per_server: 1
+nfs_dir: 'dumps'   # relative to where pirate is launched (08_server/launcher.py sets it to <run>/dumps)
+nfs_threads_per_server: 1
+check_mountpoints: [ ]
